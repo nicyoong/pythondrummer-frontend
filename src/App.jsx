@@ -10,6 +10,23 @@ export default function App() {
   const [swing, setSwing] = useState(0);
   const [volume, setVolume] = useState(100);
 
+  const toggleTheme = () => {
+    const html = document.documentElement;
+    const newTheme = html.dataset.theme === "dark" ? "light" : "dark";
+    html.dataset.theme = newTheme;
+    localStorage.setItem("theme", newTheme);
+  };
+
+  useEffect(() => {
+    const saved = localStorage.getItem("theme");
+    if (saved) {
+      document.documentElement.dataset.theme = saved;
+    } else {
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = prefersDark ? "dark" : "light";
+    }
+  }, []);
+
   useEffect(() => {
     fetch(`${API}/config`)
       .then((res) => res.json())
@@ -39,6 +56,23 @@ export default function App() {
 
   return (
     <div className="p-6 text-center font-sans">
+      <button
+          onClick={toggleTheme}
+          style={{
+            position: "absolute",
+            top: "1rem",
+            right: "1rem",
+            padding: "0.4rem 0.8rem",
+            borderRadius: "12px",
+            background: "var(--surface-strong)",
+            backdropFilter: "blur(10px)",
+            border: "none",
+            fontWeight: 600,
+            cursor: "pointer"
+          }}
+        >
+          {document.documentElement.dataset.theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+        </button>
       <h1 className="text-2xl font-bold mb-4">🥁 Web Drum Machine</h1>
       <div className="controls mb-6">
         <label>
