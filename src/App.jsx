@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import DrumPad from "./DrumPad";
 
+const API = "https://pythondrummer-backend.onrender.com";
+
 export default function App() {
   const [config, setConfig] = useState(null);
   const [pattern, setPattern] = useState([]);
@@ -9,28 +11,28 @@ export default function App() {
   const [volume, setVolume] = useState(100);
 
   useEffect(() => {
-    fetch("http://localhost:8000/config")
+    fetch(`${API}/config`)
       .then((res) => res.json())
       .then(setConfig);
-    fetch("http://localhost:8000/pattern")
+    fetch(`${API}/pattern`)
       .then((res) => res.json())
       .then((data) => setPattern(data.pattern));
   }, []);
 
   const newPattern = async () => {
-    const res = await fetch("http://localhost:8000/pattern");
+    const res = await fetch(`${API}/pattern`);
     const data = await res.json();
     setPattern(data.pattern);
   };
 
   const updateBpm = async (value) => {
     setBpm(value);
-    await fetch(`http://localhost:8000/bpm/${value}`, { method: "POST" });
+    await fetch(`${API}/bpm/${value}`, { method: "POST" });
   };
 
   const updateSwing = async (value) => {
     setSwing(value);
-    await fetch(`http://localhost:8000/swing/${value}`, { method: "POST" });
+    await fetch(`${API}/swing/${value}`, { method: "POST" });
   };
 
   if (!config) return <p>Loading...</p>;
